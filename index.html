@@ -12,6 +12,8 @@
                 --color-crimson-1: #521835;
 
                 --content-width: 42rem;
+            
+                --skew-angle: 2deg;
             }
 
             body {
@@ -75,11 +77,45 @@
                 background-color: var(--color-crimson-0);
                 color: white;
                 padding: 0.5rem;
+                border-radius: 2px;
+            }
+
+            pre::selection, pre b::selection {
+                background-color: #6c304e;
+            ;
+            }
+            
+            .left-skew {
+                transform: skewX(var(--skew-angle));
+            }
+            
+            .right-skew {
+                transform: skewX(calc(1 * var(--skew-angle)));
             }
 
             hr {
                 max-width: 80%;
                 margin: 2rem auto;
+            }
+
+            .status {
+                transform: skewY(2deg);
+                padding: 0.5rem;
+                font-weight: bold;
+                color: white;
+                user-select: none;
+            }
+
+            .implemented {
+                background-color: #0a603c;
+            }
+
+            .in-progress {
+                background-color: #604c0a;
+            }
+
+            .planned {
+                background-color: #604c0a;
             }
 
             footer {
@@ -92,6 +128,10 @@
             footer > article {
                 max-width: var(--content-width);
                 margin: 1rem auto;
+            }
+
+            .song {
+                font-style: italic;
             }
         </style>
     </head>
@@ -128,9 +168,12 @@
                         <code>&lt;=</code> and <code>&gt;=</code>. Range over
                         enum is also supported.
                     </p>
+                    <div class="status implemented right-skew">
+                        Status: implemented
+                    </div>
                 </article>
                 <article>
-                    <pre><b>type</b> Color <b>enum</b> {
+                    <pre class="right-skew"><b>type</b> Color <b>enum</b> {
     Red
     Green
     Blue
@@ -149,14 +192,13 @@
 
 <b>func</b> Rose() Color {
     <b>return</b> Color::Red
-}
-</pre>
+}</pre>
                 </article>
             </section>
             <hr />
             <section class="columns">
                 <article>
-                    <pre><b>type</b> ItalianPerson <b>struct</b> {
+                    <pre class="left-skew"><b>type</b> ItalianPerson <b>struct</b> {
     Name string {
         Title = "Nome",
         json = "name",
@@ -172,8 +214,7 @@
     <b>if</b> len(p.Name) > p::Name.MaxLength {
         <b>return</b> errors.New("name is too long")
     }
-}
-                </pre>
+}</pre>
                 </article>
                 <article>
                     <h3>Static properties</h3>
@@ -186,6 +227,9 @@
                         These static properties can replace field tags, but can
                         also provide much more.
                     </p>
+                    <div class="status in-progress left-skew">
+                        Status: in progress
+                    </div>
                 </article>
             </section>
             <hr />
@@ -197,9 +241,12 @@
                         be used for defining PDF layouts, web services, or even
                         parsers.
                     </p>
+                    <div class="status in-progress right-skew">
+                        Status: in progress
+                    </div>
                 </article>
                 <article>
-                    <pre><b>comp</b> VendorPage(vendor Vendor){
+                    <pre class="right-skew"><b>comp</b> VendorPage(vendor Vendor){
     Heading(){
         vendor.Name
     },
@@ -219,15 +266,26 @@
             </section>
             <hr />
             <section class="columns">
-                <article><h3>Query language</h3></article>
                 <article>
-                    <pre><b>func</b> FindTopCustomer() string {
-    top, err := <strong>from</strong> Customer
-        <strong>select</strong> name
-        <strong>orderBy</strong> spending
-        <strong>limit</strong> 1
+                    <pre class="left-skew"><b>type</b> Customer <b>model</b> {
+    Name     string
+    Location <b>references</b> City.Name
+    Spending <b>sum</b> Invoices.Amount
+             <b>where</b> Invoices.Customer = Name
+}
+        
+<b>func</b> FindTopCustomer() string {
+    q := <b>from</b> Customer
+            <b>select</b> Name
+            <b>orderBy</b> Spending
+            <b>limit</b> 1
+    
+    topCust, _ := q.Execute()
+
+    <b>return</b> topCustomer
 }</pre>
                 </article>
+                <article><h3>Query language</h3></article>
             </section>
             <hr />
             <section>
@@ -252,6 +310,14 @@
                 non-breaking guarantee makes it an ideal foundation for making
                 a DSL on top of it.
             </p>
+            <h3>Why no algebraic data types?</h3>
+                <p>Bolero tries to be as close to possible to underlying database
+                    and to reduce database impedance mismatch.
+                </p>
+                <p>
+                    Sum of types increses mismatch between the language and database.
+                    Exception are enums (sum of singletons), which are supported by Bolero.
+                </p>
             <h3>Can we include feature X?</h3>
             <p>
                 Maybe. I am always open to ideas that will work toward this
@@ -278,7 +344,13 @@
             </p>
         </main>
         <footer>
-            <article>Bolero 2026</article>
+            <article>
+                <p class="song">
+                    K'o da silazi k nama sa zvijezda<br>
+                    još nema ni ime i bubnja u tami
+                </p>
+                <p>Bolero 2026</p>
+            </article>
         </footer>
     </body>
 </html>
