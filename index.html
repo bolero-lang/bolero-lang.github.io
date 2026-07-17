@@ -4,23 +4,26 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Bolero</title>
+        <meta name="theme-color" content="#291720" />
         <style>
-            @import url("https://fonts.googleapis.com/css2?family=Gravitas+One&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+            @import url('https://fonts.googleapis.com/css2?family=Share+Tech&display=swap');
 
             :root {
                 --color-crimson-0: #291720;
                 --color-crimson-1: #521835;
+                --color-crimson-2: #6c304e;
 
-                --content-width: 42rem;
+                --content-width: 62rem;
             
                 --skew-angle: 2deg;
             }
 
             body {
                 background-color: white;
-                font-family: "Inter", sans-serif;
+                font-family: "Share Tech", sans-serif;
                 font-optical-sizing: auto;
                 margin: 0;
+                font-size: 1.2rem;
             }
 
             .justify {
@@ -31,11 +34,12 @@
                 background-color: var(--color-crimson-1);
                 color: white;
                 padding: 2rem;
+                user-select: none;
+                margin-bottom: 2rem;
             }
 
             h1 {
                 text-align: center;
-                font-family: "Gravitas One", serif;
                 font-weight: 400;
                 font-style: normal;
                 font-variant: small-caps;
@@ -46,11 +50,11 @@
             h2 {
                 color: var(--color-crimson-1);
                 text-align: center;
-                font-family: "Gravitas One", serif;
+                font-family: "Share Tech", sans-serif;
                 font-weight: 400;
                 font-style: normal;
-                font-variant: small-caps;
                 margin-top: 4rem;
+                font-size: 3rem;
             }
 
             h3 {
@@ -60,6 +64,7 @@
             main {
                 max-width: var(--content-width);
                 margin: 0 auto;
+                padding: 0 1rem;
             }
 
             .columns {
@@ -74,32 +79,21 @@
             }
 
             pre {
-                background-color: var(--color-crimson-0);
-                color: white;
+                background-color: #f8f3f6;
+                color: var(--color-crimson-0);
                 padding: 0.5rem;
                 border-radius: 2px;
-            }
-
-            pre::selection, pre b::selection {
-                background-color: #6c304e;
-            ;
-            }
-            
-            .left-skew {
-                transform: skewX(var(--skew-angle));
-            }
-            
-            .right-skew {
-                transform: skewX(calc(1 * var(--skew-angle)));
+                border: 1px solid var(--color-crimson-2);
+                font-size: 1rem;
             }
 
             hr {
                 max-width: 80%;
                 margin: 2rem auto;
+                color: var(--color-crimson-2);
             }
 
             .status {
-                transform: skewY(2deg);
                 padding: 0.5rem;
                 font-weight: bold;
                 color: white;
@@ -130,6 +124,10 @@
                 margin: 1rem auto;
             }
 
+            *::selection {
+                background-color: #e0c2d1;
+            }
+
             .song {
                 font-style: italic;
             }
@@ -139,41 +137,38 @@
     <body>
         <header>
             <h1>Bolero</h1>
-            <p id="motto"></p>
         </header>
         <main>
             <p class="justify">
-                Bolero is a domain-specific language (DSL) intended for easily
-                building CRUD applications. Bolero is a superset of the Go
-                programming language and is compatible with all Go codebases.
+                Bolero is a domain-specific language for building CRUD
+                applications. It is a superset of Go and remains fully
+                compatible with existing Go codebases.
             </p>
             <p class="justify">
-                Bolero is currently in an early alpha phase. Below is a list of
-                features that Bolero will bring, along with the current status
-                of implementation.
+                Bolero is in early alpha. The features below outline where the
+                language is headed, along with the current state of each.
             </p>
             <h2>Features</h2>
             <section class="columns">
                 <article>
                     <h3>Enums</h3>
                     <p>
-                        Bolero has first-class enum types. Proper enums allow
-                        safe switch statements.
+                        Bolero has first-class enum types with exhaustive
+                        switch statements checked at compile time.
                     </p>
                     <p>Like structs, enums can define methods.</p>
                     <p>
-                        Enum values can be compared with <code>==</code> and
-                        <code>!=</code> operators, but also with
-                        <code>&lt;</code>, <code>&gt;</code>,
-                        <code>&lt;=</code> and <code>&gt;=</code>. Range over
-                        enum is also supported.
+                        Enum values support equality and ordering operators
+                        (<code>==</code>, <code>!=</code>, <code>&lt;</code>,
+                        <code>&gt;</code>, <code>&lt;=</code>,
+                        <code>&gt;=</code>), and can be ranged over.
                     </p>
-                    <div class="status implemented right-skew">
+                    <div class="status implemented">
                         Status: implemented
                     </div>
                 </article>
                 <article>
-                    <pre class="right-skew"><b>type</b> Color <b>enum</b> {
+                    <pre><b>type</b> Color <b>enum</b> {
     Red
     Green
     Blue
@@ -198,36 +193,33 @@
             <hr />
             <section class="columns">
                 <article>
-                    <pre class="left-skew"><b>type</b> ItalianPerson <b>struct</b> {
+                    <pre><b>type</b> ItalianPerson <b>struct</b> {
     Name string {
-        Title = "Nome",
-        json = "name",
-        MaxLength = 50
+        json: "name",
+        MaxLength: 50
     }
     Age uint {
-        Title = "Età",
-        json = "age"
+        json: "age"
     }
 }
 
 <b>func</b> validate(p ItalianPerson) error {
     <b>if</b> len(p.Name) > p::Name.MaxLength {
-        <b>return</b> errors.New("name is too long")
+        <b>return</b> errors.New("too long")
     }
 }</pre>
                 </article>
                 <article>
                     <h3>Static properties</h3>
                     <p>
-                        Each field in structure can have a list of constant
-                        values attached to it. These values are shared between
-                        all instances of that structure type.
+                        Every struct field can carry constant values attached
+                        to the type itself, shared across all instances.
                     </p>
                     <p>
-                        These static properties can replace field tags, but can
-                        also provide much more.
+                        Static properties subsume field tags — typed, checked
+                        by the compiler, and accessible from ordinary code.
                     </p>
-                    <div class="status in-progress left-skew">
+                    <div class="status in-progress">
                         Status: in progress
                     </div>
                 </article>
@@ -237,16 +229,17 @@
                 <article>
                     <h3>Components</h3>
                     <p>
-                        Components are not just used for building HTML. They can
-                        be used for defining PDF layouts, web services, or even
+                        Components are a general notation for declarative,
+                        tree-shaped structures — not just HTML. The same
+                        syntax describes PDF layouts, web services, even
                         parsers.
                     </p>
-                    <div class="status in-progress right-skew">
+                    <div class="status in-progress">
                         Status: in progress
                     </div>
                 </article>
                 <article>
-                    <pre class="right-skew"><b>comp</b> VendorPage(vendor Vendor){
+                    <pre><b>comp</b> VendorPage(vendor Vendor){
     Heading(){
         vendor.Name
     },
@@ -267,7 +260,16 @@
             <hr />
             <section class="columns">
                 <article>
-                    <pre class="left-skew"><b>type</b> Customer <b>model</b> {
+                    <pre><b>type</b> City <b>model</b> {
+    Id autoincrement
+    Name string {
+        Length: 20,
+    }
+    PostCode string
+}
+
+<b>type</b> Customer <b>model</b> {
+    Id       autoincrement
     Name     string
     Location <b>references</b> City.Name
     Spending <b>sum</b> Invoices.Amount
@@ -280,67 +282,113 @@
             <b>orderBy</b> Spending
             <b>limit</b> 1
     
-    topCust, _ := q.Execute()
+    topCustomer, _ := q.Execute()
 
     <b>return</b> topCustomer
 }</pre>
                 </article>
-                <article><h3>Query language</h3></article>
+                <article>
+                    <h3>Query language</h3>
+                    <p>
+                        Models describe persistent data directly in the
+                        language: references, computed aggregates, and
+                        constraints live next to the fields they concern.
+                    </p>
+                    <p>
+                        Queries are written in Bolero itself and typechecked
+                        against the models. No SQL strings, no runtime
+                        surprises.
+                    </p>
+                    <div class="status planned">
+                        Status: planned
+                    </div>
+                </article>
             </section>
             <hr />
             <section>
-                <h3>Full stack framework</h3>
+                <h3>Full-stack framework</h3>
                 <p>
-                    Bolero will have a full-stack framework that will maximally
-                    utilize the listed features. This framework will enable
-                    simple development of all CRUD-based business applications
-                    such as ERP, WMS, back offices, etc.
+                    Bolero will ship with a full-stack framework built on the
+                    features above, aimed squarely at CRUD-heavy business
+                    applications: ERP, WMS, back offices, and the like.
                 </p>
                 <p>
-                    The framework will support localization, authorization,
+                    The framework will cover localization, authorization,
                     background tasks, logging, retention policies, debugging,
                     custom web services, and auditing.
                 </p>
             </section>
             <h2>FAQ</h2>
+            <h3>But why?</h3>
+            <p>Somewhere in the last decade we forgot how efficient we once
+                were at building business applications. We traded the ugly but
+                solid interfaces of legacy enterprise software for mountains
+                of JavaScript, and along the way abandoned basic principles of
+                interface design in the chase for the next shiny thing.
+            </p>
+            <p>Tools like NAV, FoxPro, Microsoft Access, Sybase, Omnis, and
+                countless other RAD platforms failed to evolve with their
+                developers. But they clearly got something right: applications
+                written in them decades ago (often by people who were not
+                software engineers) are still running in production today.
+            </p>
             <h3>Why Go?</h3>
             <p>
-                Go is a language with amazing performance, exceptional
-                deployability, and an ever-growing ecosystem. Go's
-                non-breaking guarantee makes it an ideal foundation for making
-                a DSL on top of it.
+                Go offers excellent performance, trivially simple deployment,
+                and a mature, still-growing ecosystem. Its compatibility
+                promise makes it a stable foundation to build a language on.
+                The <a href="https://github.com/ubavic/compiles-to-go">many
+                languages that already target Go</a> show it is an attractive
+                platform for this.
             </p>
             <h3>Why no algebraic data types?</h3>
-                <p>Bolero tries to be as close to possible to underlying database
-                    and to reduce database impedance mismatch.
+                <p>Bolero stays as close as possible to the underlying
+                    database, minimizing the object–relational impedance
+                    mismatch.
                 </p>
                 <p>
-                    Sum of types increses mismatch between the language and database.
-                    Exception are enums (sum of singletons), which are supported by Bolero.
+                    Sum types widen that gap: relational databases have no
+                    natural representation for them. The exception is enums —
+                    sums of singletons — which map cleanly and are fully
+                    supported.
                 </p>
             <h3>Can we include feature X?</h3>
             <p>
-                Maybe. I am always open to ideas that will work toward this
-                language's goals. Open an issue on the repo, and let's discuss
-                your ideas.
+                Maybe. I am open to any idea that serves the goals of the
+                language. Open an issue on the repo and let's discuss it.
             </p>
             <p>
-                There are still some things that I would like to introduce to
-                the Bolero language, but I only have a vague idea of how to
-                proceed. Features like default values for struct fields, or
-                simple error handling.
+                A few features are on my own wishlist but still lack a solid
+                design — default values for struct fields and lighter-weight
+                error handling among them.
             </p>
 
-            <h3>Why use Bolero in age of AI?</h3>
+            <h3>Why use Bolero in the age of AI?</h3>
             <p>
-                While AI can quickly produce large amounts of code, AI is still
-                far from producing consistent, correct code.
+                DSLs like Bolero sit between general-purpose languages and
+                natural language, and inherit trade-offs from both sides. They
+                are more formal than natural language and, within their
+                domain, more expressive than a general-purpose language. In
+                exchange, they demand somewhat more technical skill than
+                prompting an LLM, and they are less flexible than a
+                general-purpose language.
             </p>
             <p>
-                While Bolero is a perfect language to use with AI, it also tries
-                to remove some of the need for AI. Namely, it tries to let the
-                programmer express high-level ideas more concisely, on a more
-                abstract, but still formal, level.
+                The first trade-off is softened by pairing Bolero with LLMs
+                an approach whose benefits Martin Fowler describes well in
+                <a href="https://martinfowler.com/articles/llm-and-dsls.html">LLMs
+                and DSLs</a>.
+            </p>
+            <p>
+                The second is addressed by leaning on Go itself: for every
+                feature Bolero adds, a plain Go construct remains available as
+                a substitute. Ultimately, Bolero will let you transpile any
+                Bolero source to pure Go.
+            </p>
+            <p>
+                Finally, while Bolero works well with AI, it also aims to
+                remove some of the need for it: developers without access to
+                LLMs should be just as productive.
             </p>
         </main>
         <footer>
