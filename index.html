@@ -19,6 +19,7 @@
             }
 
             body {
+                background-color: var(--color-crimson-0);
                 background-color: white;
                 font-family: "Share Tech", sans-serif;
                 font-optical-sizing: auto;
@@ -62,6 +63,7 @@
             }
 
             main {
+                background-color: white;
                 max-width: var(--content-width);
                 margin: 0 auto;
                 padding: 0 1rem;
@@ -131,6 +133,17 @@
             .song {
                 font-style: italic;
             }
+
+            @media screen and (max-width: 800px) {
+                .columns {
+                    flex-direction: column;
+                }
+
+                .columns > article {
+                    max-width: unset;
+                    flex-grow: unset;
+                }
+            }
         </style>
     </head>
 
@@ -193,7 +206,7 @@
             <hr />
             <section class="columns">
                 <article>
-                    <pre><b>type</b> ItalianPerson <b>struct</b> {
+                    <pre><b>type</b> Person <b>struct</b> {
     Name string {
         json: "name",
         MaxLength: 50
@@ -203,7 +216,7 @@
     }
 }
 
-<b>func</b> validate(p ItalianPerson) error {
+<b>func</b> validate(p Person) error {
     <b>if</b> len(p.Name) > p::Name.MaxLength {
         <b>return</b> errors.New("too long")
     }
@@ -268,12 +281,21 @@
     PostCode string
 }
 
+<b>type</b> Invoice <b>model</b> {
+    Id       autoincrement
+    Customer <b>references</b> Customer
+    Amount   decimal {
+        Precision: 12,
+        Scale: 2
+    }
+}
+
 <b>type</b> Customer <b>model</b> {
     Id       autoincrement
     Name     string
     Location <b>references</b> City.Name
-    Spending <b>sum</b> Invoices.Amount
-             <b>where</b> Invoices.Customer = Name
+    Spending <b>sum</b> Invoice.Amount
+                <b>where</b> Invoice.Customer = Name
 }
         
 <b>func</b> FindTopCustomer() string {
@@ -299,6 +321,10 @@
                         against the models. No SQL strings, no runtime
                         surprises.
                     </p>
+                    <p>
+                        There will be more than just simple queries: first class support for
+                        views, schemas, indexes, and transactions is also planned.
+                    </p>
                     <div class="status planned">
                         Status: planned
                     </div>
@@ -313,18 +339,27 @@
                     applications: ERP, WMS, back offices, and the like.
                 </p>
                 <p>
-                    The framework will cover localization, authorization,
-                    background tasks, logging, retention policies, debugging,
-                    custom web services, and auditing.
+                    The framework will cover user management and authentication,
+                    user permissions, localization, reports, mailing, background tasks,
+                    monitoring, retention policies and archiving, and many more things...
                 </p>
             </section>
-            <h2>FAQ</h2>
-            <h3>But why?</h3>
+
+            <h2>Development</h2>
+
+            <p>Join development of Bolero on <a href="https://github.com/bolero-lang">GitHub</a> and influence the language design.</p>
+
+
+            <p>The plan is to have beta before 2027, and v1.0 release before 2028. After that, as Go, we will promise full backward compatibility.</p>
+
+            <h2>Why?</h2>
+            
+            <h3>But, why?</h3>
             <p>Somewhere in the last decade we forgot how efficient we once
                 were at building business applications. We traded the ugly but
                 solid interfaces of legacy enterprise software for mountains
                 of JavaScript, and along the way abandoned basic principles of
-                interface design in the chase for the next shiny thing.
+                human interface design in the chase for the next shiny thing.
             </p>
             <p>Tools like NAV, FoxPro, Microsoft Access, Sybase, Omnis, and
                 countless other RAD platforms failed to evolve with their
@@ -332,35 +367,51 @@
                 written in them decades ago (often by people who were not
                 software engineers) are still running in production today.
             </p>
+
+            <h3>Why not use existing low code solution?</h3>
+            <p>
+                Mostly because majority of existing tools is commercial.
+            </p>
+            <p>
+                Idea of Bolero is to give opportunity even to smallest organizations/teams
+                to build custom applications without need to invest any money.
+            </p>
+
             <h3>Why Go?</h3>
             <p>
                 Go offers excellent performance, trivially simple deployment,
                 and a mature, still-growing ecosystem. Its compatibility
                 promise makes it a stable foundation to build a language on.
+                </p>
+            <p>
                 The <a href="https://github.com/ubavic/compiles-to-go">many
-                languages that already target Go</a> show it is an attractive
-                platform for this.
+                languages that already target Go</a> show how it is an attractive
+                platform for new languages.
             </p>
+
             <h3>Why no algebraic data types?</h3>
-                <p>Bolero stays as close as possible to the underlying
-                    database, minimizing the object–relational impedance
-                    mismatch.
-                </p>
-                <p>
-                    Sum types widen that gap: relational databases have no
-                    natural representation for them. The exception is enums —
-                    sums of singletons — which map cleanly and are fully
-                    supported.
-                </p>
-            <h3>Can we include feature X?</h3>
             <p>
-                Maybe. I am open to any idea that serves the goals of the
-                language. Open an issue on the repo and let's discuss it.
+                Bolero try to stays as close as possible to the database,
+                minimizing the <a href="https://en.wikipedia.org/wiki/Object%E2%80%93relational_impedance_mismatch">object–relational impedance mismatch</a>.
             </p>
             <p>
-                A few features are on my own wishlist but still lack a solid
-                design — default values for struct fields and lighter-weight
-                error handling among them.
+                Sum types widen that gap: relational databases have no
+                natural representation for them. The exception is enums,
+                sums of singletons, which map cleanly and are fully
+                supported.
+            </p>
+            
+            <h3>Why no feature X?</h3>
+            <p>
+                I have some more features in my head, but still without a solid design.
+                For example, maybe it would be bee good to implement default values for struct fields and function parameters.
+                Also a less explicit error handling would maybe be a good idea.
+            </p>
+            <p>
+                I am open to any idea that serves the goal of the language - make building CRUD applications simple.
+            </p>
+            <p>
+                If you have an idea, don't hesitate to open an issue on the repo.
             </p>
 
             <h3>Why use Bolero in the age of AI?</h3>
@@ -375,7 +426,7 @@
             </p>
             <p>
                 The first trade-off is softened by pairing Bolero with LLMs
-                an approach whose benefits Martin Fowler describes well in
+                an approach whose benefits are described well in the article 
                 <a href="https://martinfowler.com/articles/llm-and-dsls.html">LLMs
                 and DSLs</a>.
             </p>
@@ -388,7 +439,9 @@
             <p>
                 Finally, while Bolero works well with AI, it also aims to
                 remove some of the need for it: developers without access to
-                LLMs should be just as productive.
+                LLMs should be just as productive in building CRUD apps.
+                And I do believe, that developer with clear idea and well designed
+                DSL can outperform LLM. 
             </p>
         </main>
         <footer>
