@@ -247,7 +247,7 @@
                         Status: implemented
                     </div>
                 </article>
-                <section class="tabs">
+                <article class="tabs">
                     <header>
                         <label><input type="radio" name="tabs-enums" checked />Definition</label>
                         <label><input type="radio" name="tabs-enums" />Methods</label>
@@ -295,11 +295,32 @@
     }
 }</pre>
                     </article>
-                </section>
+                </article>
             </section>
+
             <hr />
+            
             <section class="columns">
-                <section class="tabs">
+                <article>
+                    <h3>Static properties</h3>
+                    <p>
+                        Every struct field can carry constant values attached
+                        to the type itself, shared across all instances.
+                    </p>
+                    <p>
+                        Static properties subsume field tags — typed, checked
+                        by the compiler, and accessible from ordinary code.
+                    </p>
+                    <p>
+                        Packages can declare their own property groups, so
+                        third-party properties live in a namespace of their
+                        own and never collide.
+                    </p>
+                    <div class="status in-progress">
+                        Status: in progress
+                    </div>
+                </article>
+                <article class="tabs">
                     <header>
                         <label><input type="radio" name="tabs-static" checked />Definition</label>
                         <label><input type="radio" name="tabs-static" />Property groups</label>
@@ -345,28 +366,11 @@
     <b>return</b> Person::Name.json.Name
 }</pre>
                     </article>
-                </section>
-                <article>
-                    <h3>Static properties</h3>
-                    <p>
-                        Every struct field can carry constant values attached
-                        to the type itself, shared across all instances.
-                    </p>
-                    <p>
-                        Static properties subsume field tags — typed, checked
-                        by the compiler, and accessible from ordinary code.
-                    </p>
-                    <p>
-                        Packages can declare their own property groups, so
-                        third-party properties live in a namespace of their
-                        own and never collide.
-                    </p>
-                    <div class="status in-progress">
-                        Status: in progress
-                    </div>
                 </article>
             </section>
+
             <hr />
+            
             <section class="columns">
                 <article>
                     <h3>Components</h3>
@@ -377,10 +381,10 @@
                         parsers.
                     </p>
                     <div class="status in-progress">
-                        Status: in progress
+                        Status: planned, syntax not fixed
                     </div>
                 </article>
-                <section class="tabs">
+                <article class="tabs">
                     <header>
                         <label><input type="radio" name="tabs-components" checked />Page</label>
                         <label><input type="radio" name="tabs-components" />List</label>
@@ -454,11 +458,35 @@
     }
 }</pre>
                     </article>
-                </section>
+                </article>
             </section>
+
             <hr />
+            
             <section class="columns">
-                <section class="tabs">
+                <article>
+                    <h3>Data layer</h3>
+                    <p>
+                        Models describe persistent data directly in the
+                        language: references, computed aggregates, and
+                        constraints live next to the fields they concern.
+                    </p>
+                    <p>
+                        Queries are written in Bolero itself and typechecked
+                        against the models. No SQL strings, no runtime
+                        surprises.
+                    </p>
+                    <p>
+                        Transactions are a block construct: <code>atomic</code>
+                        commits on success and rolls back on error. First-class
+                        support for views, schemas, and indexes is also
+                        planned.
+                    </p>
+                    <div class="status planned">
+                        Status: planned, syntax not fixed
+                    </div>
+                </article>
+                <article class="tabs">
                     <header>
                         <label><input type="radio" name="tabs-query" checked />Models</label>
                         <label><input type="radio" name="tabs-query" />Queries</label>
@@ -522,28 +550,6 @@
     }
 }</pre>
                     </article>
-                </section>
-                <article>
-                    <h3>Data layer</h3>
-                    <p>
-                        Models describe persistent data directly in the
-                        language: references, computed aggregates, and
-                        constraints live next to the fields they concern.
-                    </p>
-                    <p>
-                        Queries are written in Bolero itself and typechecked
-                        against the models. No SQL strings, no runtime
-                        surprises.
-                    </p>
-                    <p>
-                        Transactions are a block construct: <code>atomic</code>
-                        commits on success and rolls back on error. First-class
-                        support for views, schemas, and indexes is also
-                        planned.
-                    </p>
-                    <div class="status planned">
-                        Status: planned
-                    </div>
                 </article>
             </section>
             <hr />
