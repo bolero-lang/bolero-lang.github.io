@@ -1,0 +1,207 @@
+@import url("https://fonts.googleapis.com/css2?family=Share+Tech&display=swap");
+
+:root {
+  --color-crimson-0: #291720;
+  --color-crimson-1: #521835;
+  --color-crimson-2: #6c304e;
+
+  --content-width: 62rem;
+
+  --skew-angle: 2deg;
+}
+
+body {
+  background-color: var(--color-crimson-0);
+  background-color: white;
+  font-family: "Share Tech", sans-serif;
+  font-optical-sizing: auto;
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.justify {
+  text-align: justify;
+}
+
+header {
+  background-color: var(--color-crimson-1);
+  color: white;
+  padding: 2rem;
+  user-select: none;
+  margin-bottom: 2rem;
+}
+
+h1 {
+  text-align: center;
+  font-weight: 400;
+  font-style: normal;
+  font-variant: small-caps;
+  font-size: 5rem;
+  margin: 0.5rem;
+}
+
+h2 {
+  color: var(--color-crimson-1);
+  text-align: center;
+  font-family: "Share Tech", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  margin-top: 4rem;
+  font-size: 3rem;
+}
+
+h3 {
+  color: var(--color-crimson-1);
+}
+
+main {
+  background-color: white;
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.columns {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+}
+
+.columns > article {
+  max-width: 50%;
+  flex-grow: 1;
+}
+
+pre {
+  background-color: #f8f3f6;
+  color: var(--color-crimson-0);
+  padding: 0.5rem;
+  border-radius: 2px;
+  border: 1px solid var(--color-crimson-2);
+  font-size: 1rem;
+}
+
+hr {
+  max-width: 80%;
+  margin: 2rem auto;
+  color: var(--color-crimson-2);
+}
+
+.status {
+  padding: 0.5rem;
+  font-weight: bold;
+  color: white;
+  user-select: none;
+}
+
+.implemented {
+  background-color: #0a603c;
+}
+
+.in-progress {
+  background-color: #604c0a;
+}
+
+.planned {
+  background-color: #604c0a;
+}
+
+footer {
+  background-color: var(--color-crimson-0);
+  color: white;
+  padding: 0.5rem;
+  margin-top: 4rem;
+}
+
+footer > article {
+  max-width: var(--content-width);
+  margin: 1rem auto;
+}
+
+*::selection {
+  background-color: #e0c2d1;
+}
+
+.song {
+  font-style: italic;
+}
+
+.tabs {
+  max-width: 50%;
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.tabs > header {
+  display: flex;
+  gap: 0.25rem;
+  background-color: transparent;
+  color: inherit;
+  padding: 0;
+  margin-bottom: 0;
+}
+
+.tabs input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.tabs > header label {
+  padding: 0.25rem 1rem;
+  border: 1px solid var(--color-crimson-2);
+  border-bottom: none;
+  border-radius: 2px 2px 0 0;
+  background-color: #f8f3f6;
+  color: var(--color-crimson-1);
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.tabs > header label:has(input:checked) {
+  background-color: var(--color-crimson-1);
+  color: white;
+}
+
+.tabs > header label:has(input:focus-visible) {
+  outline: 2px solid var(--color-crimson-2);
+}
+
+.tabs > article {
+  display: none;
+}
+
+.tabs > article > pre {
+  margin-top: 0;
+}
+
+.tabs:has(> header label:nth-of-type(1) input:checked) > article:nth-of-type(1),
+.tabs:has(> header label:nth-of-type(2) input:checked) > article:nth-of-type(2),
+.tabs:has(> header label:nth-of-type(3) input:checked) > article:nth-of-type(3),
+.tabs:has(> header label:nth-of-type(4) input:checked)
+  > article:nth-of-type(4) {
+  display: block;
+}
+
+.comment {
+  color: #93707f;
+  font-style: italic;
+}
+
+@media screen and (max-width: 800px) {
+  .columns {
+    flex-direction: column;
+  }
+
+  .columns > article {
+    max-width: unset;
+    flex-grow: unset;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .tabs {
+    max-width: unset;
+    flex-grow: unset;
+  }
+}
