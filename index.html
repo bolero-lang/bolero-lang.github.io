@@ -134,12 +134,80 @@
                 font-style: italic;
             }
 
+            .tabs {
+                max-width: 50%;
+                flex-grow: 1;
+                min-width: 0;
+            }
+
+            .tabs > header {
+                display: flex;
+                gap: 0.25rem;
+                background-color: transparent;
+                color: inherit;
+                padding: 0;
+                margin-bottom: 0;
+            }
+
+            .tabs input[type="radio"] {
+                position: absolute;
+                opacity: 0;
+                pointer-events: none;
+            }
+
+            .tabs > header label {
+                padding: 0.25rem 1rem;
+                border: 1px solid var(--color-crimson-2);
+                border-bottom: none;
+                border-radius: 2px 2px 0 0;
+                background-color: #f8f3f6;
+                color: var(--color-crimson-1);
+                font-size: 1rem;
+                cursor: pointer;
+            }
+
+            .tabs > header label:has(input:checked) {
+                background-color: var(--color-crimson-1);
+                color: white;
+            }
+
+            .tabs > header label:has(input:focus-visible) {
+                outline: 2px solid var(--color-crimson-2);
+            }
+
+            .tabs > article {
+                display: none;
+            }
+
+            .tabs > article > pre {
+                margin-top: 0;
+            }
+
+            .tabs:has(> header label:nth-of-type(1) input:checked) > article:nth-of-type(1),
+            .tabs:has(> header label:nth-of-type(2) input:checked) > article:nth-of-type(2),
+            .tabs:has(> header label:nth-of-type(3) input:checked) > article:nth-of-type(3),
+            .tabs:has(> header label:nth-of-type(4) input:checked) > article:nth-of-type(4) {
+                display: block;
+            }
+
+            .comment {
+                color: #93707f;
+                font-style: italic;
+            }
+
             @media screen and (max-width: 800px) {
                 .columns {
                     flex-direction: column;
                 }
 
                 .columns > article {
+                    max-width: unset;
+                    flex-grow: unset;
+                }
+            }
+
+            @media screen and (max-width: 800px) {
+                .tabs {
                     max-width: unset;
                     flex-grow: unset;
                 }
@@ -169,24 +237,36 @@
                         Bolero has first-class enum types with exhaustive
                         switch statements checked at compile time.
                     </p>
-                    <p>Like structs, enums can define methods.</p>
                     <p>
-                        Enum values support equality and ordering operators
-                        (<code>==</code>, <code>!=</code>, <code>&lt;</code>,
-                        <code>&gt;</code>, <code>&lt;=</code>,
-                        <code>&gt;=</code>), and can be ranged over.
+                        A value of an enum type is always one of its declared
+                        variants — illegal states are unrepresentable, and
+                        the compiler, not a code review, guarantees that
+                        every case is handled.
                     </p>
                     <div class="status implemented">
                         Status: implemented
                     </div>
                 </article>
-                <article>
-                    <pre><b>type</b> Color <b>enum</b> {
+                <section class="tabs">
+                    <header>
+                        <label><input type="radio" name="tabs-enums" checked />Definition</label>
+                        <label><input type="radio" name="tabs-enums" />Methods</label>
+                        <label><input type="radio" name="tabs-enums" />Comparison</label>
+                        <label><input type="radio" name="tabs-enums" />Range</label>
+                    </header>
+                    <article>
+                        <pre><b>type</b> Color <b>enum</b> {
     Red
     Green
     Blue
 }
 
+<b>func</b> Rose() Color {
+    <b>return</b> Color::Red
+}</pre>
+                    </article>
+                    <article>
+                        <pre><span class="comment">// Like structs, enums can define methods.</span>
 <b>func</b> (c Color) Hex() string {
     <b>switch</b> c {
         Red:
@@ -196,32 +276,76 @@
         Blue:
             <b>return</b> "00F"
     }
-}
-
-<b>func</b> Rose() Color {
-    <b>return</b> Color::Red
 }</pre>
-                </article>
+                    </article>
+                    <article>
+                        <pre><span class="comment">// Enum values support comparasion operators</span>
+<b>func</b> Max(c, d Color) Color {
+    <b>if</b> c >= d {
+        <b>return</b> c
+    }
+    <b>return</b> d
+}</pre>
+                    </article>
+                    <article>
+                        <pre><span class="comment">// Enum values can be ranged over.</span>
+<b>func</b> PrintPalette() {
+    <b>for</b> c := <b>range</b> Color {
+        fmt.Println(c.Hex())
+    }
+}</pre>
+                    </article>
+                </section>
             </section>
             <hr />
             <section class="columns">
-                <article>
-                    <pre><b>type</b> Person <b>struct</b> {
+                <section class="tabs">
+                    <header>
+                        <label><input type="radio" name="tabs-static" checked />Definition</label>
+                        <label><input type="radio" name="tabs-static" />Property groups</label>
+                        <label><input type="radio" name="tabs-static" />Usage</label>
+                    </header>
+                    <article>
+                        <pre><b>type</b> Person <b>struct</b> {
     Name string {
-        json: "name",
         MaxLength: 50
     }
-    Age uint {
-        json: "age"
+    Age uint
+}</pre>
+                    </article>
+                    <article>
+                        <pre><span class="comment">// A package can declare its own group of
+// properties — no collisions between packages.</span>
+<b>type</b> Person <b>struct</b> {
+    Name string {
+        MaxLength: 50,
+        json: {
+            Name: "name",
+            OmitEmpty: true
+        }
     }
-}
-
+    Age uint {
+        json: {
+            Name: "age"
+        }
+    }
+}</pre>
+                    </article>
+                    <article>
+                        <pre><span class="comment">// :: reads type-level data: p::Name is the
+// field descriptor, p.Name is the value.</span>
 <b>func</b> validate(p Person) error {
     <b>if</b> len(p.Name) > p::Name.MaxLength {
         <b>return</b> errors.New("too long")
     }
+}
+
+<span class="comment">// Grouped properties are reached the same way.</span>
+<b>func</b> jsonKey() string {
+    <b>return</b> Person::Name.json.Name
 }</pre>
-                </article>
+                    </article>
+                </section>
                 <article>
                     <h3>Static properties</h3>
                     <p>
@@ -231,6 +355,11 @@
                     <p>
                         Static properties subsume field tags — typed, checked
                         by the compiler, and accessible from ordinary code.
+                    </p>
+                    <p>
+                        Packages can declare their own property groups, so
+                        third-party properties live in a namespace of their
+                        own and never collide.
                     </p>
                     <div class="status in-progress">
                         Status: in progress
@@ -251,8 +380,15 @@
                         Status: in progress
                     </div>
                 </article>
-                <article>
-                    <pre><b>comp</b> VendorPage(vendor Vendor){
+                <section class="tabs">
+                    <header>
+                        <label><input type="radio" name="tabs-components" checked />Page</label>
+                        <label><input type="radio" name="tabs-components" />List</label>
+                        <label><input type="radio" name="tabs-components" />Loop</label>
+                        <label><input type="radio" name="tabs-components" />Parser</label>
+                    </header>
+                    <article>
+                        <pre><b>comp</b> VendorPage(vendor Vendor){
     Heading(){
         vendor.Name
     },
@@ -268,12 +404,69 @@
         }
     }
 }</pre>
-                </article>
+                    </article>
+                    <article>
+                        <pre><span class="comment">// The same notation drives tables,
+// sorting and pagination.</span>
+<b>comp</b> VendorList(vendors []Vendor){
+    Heading(){
+        "Vendors"
+    },
+    Table(
+        Paginate = true,
+        Data = vendors
+    ){
+        Column(){
+            Vendor::Name
+        },
+        Column(Sortable = true){
+            Vendor::City
+        }
+    }
+}</pre>
+                    </article>
+                    <article>
+                        <pre><b>comp</b> VendorRows(vendors []Vendor){
+    <b>for</b> _, v := <b>range</b> vendors {
+        Row(){
+            v.Name,
+            v.City
+        }
+    }
+}</pre>
+                    </article>
+                    <article>
+                        <pre><b>comp</b> Decimal(){
+    Sequence(){
+        Optional(){
+            Choice(){
+                Literal("+"),
+                Literal("-")
+            }
+        },
+        Digits(),
+        Optional(){
+            Sequence(){
+                Literal("."),
+                Digits()
+            }
+        }
+    }
+}</pre>
+                    </article>
+                </section>
             </section>
             <hr />
             <section class="columns">
-                <article>
-                    <pre><b>type</b> City <b>model</b> {
+                <section class="tabs">
+                    <header>
+                        <label><input type="radio" name="tabs-query" checked />Models</label>
+                        <label><input type="radio" name="tabs-query" />Queries</label>
+                        <label><input type="radio" name="tabs-query" />Transactions</label>
+                    </header>
+                    <article>
+                        <pre><span class="comment">// A model maps to a database table.</span>
+<b>type</b> City <b>model</b> {
     Id autoincrement
     Name string {
         Length: 20,
@@ -281,6 +474,7 @@
     PostCode string
 }
 
+<span class="comment">// references declares a typed relation.</span>
 <b>type</b> Invoice <b>model</b> {
     Id       autoincrement
     Customer <b>references</b> Customer
@@ -290,16 +484,22 @@
     }
 }
 
+<span class="comment">// Aggregates live next to the data:
+// Spending sums the customer's invoices.</span>
 <b>type</b> Customer <b>model</b> {
     Id       autoincrement
     Name     string
     Location <b>references</b> City.Name
     Spending <b>sum</b> Invoice.Amount
                 <b>where</b> Invoice.Customer = Name
-}
-        
-<b>func</b> FindTopCustomer() string {
-    q := <b>from</b> Customer
+}</pre>
+                    </article>
+                    <article>
+                        <pre><span class="comment">// Queries are typechecked against the
+// models — no SQL strings.</span>
+<b>func</b> FindTopCustomer(db Connection) string {
+    q := <b>with</b> db
+            <b>from</b> Customer
             <b>select</b> Name
             <b>orderBy</b> Spending
             <b>limit</b> 1
@@ -308,9 +508,23 @@
 
     <b>return</b> topCustomer
 }</pre>
-                </article>
+                    </article>
+                    <article>
+                        <pre><span class="comment">// atomic runs its body in one transaction:
+// commit on success, rollback on any error.</span>
+<b>func</b> DeleteCustomer(db Connection, id int) error {
+    <b>return</b> <b>atomic</b> <b>with</b> db {
+        <b>delete</b> Invoice
+            <b>where</b> Customer = id
+
+        <b>delete</b> Customer
+            <b>where</b> Id = id
+    }
+}</pre>
+                    </article>
+                </section>
                 <article>
-                    <h3>Query language</h3>
+                    <h3>Data layer</h3>
                     <p>
                         Models describe persistent data directly in the
                         language: references, computed aggregates, and
@@ -322,8 +536,10 @@
                         surprises.
                     </p>
                     <p>
-                        There will be more than just simple queries: first class support for
-                        views, schemas, indexes, and transactions is also planned.
+                        Transactions are a block construct: <code>atomic</code>
+                        commits on success and rolls back on error. First-class
+                        support for views, schemas, and indexes is also
+                        planned.
                     </p>
                     <div class="status planned">
                         Status: planned
